@@ -179,81 +179,81 @@ class LLM(torch.nn.Module):
         print(f"in_LLM_load")
         allowed_init = {"pretrained", "random"}
 
-        # if init == "pretrained":
-        #     print("_____________________in_LLM_load_pretrain___________________________")
-        #     checkpoint_dir = auto_download_checkpoint(model_name=model, access_token=access_token, ignore_tokenizer_files=tokenizer_dir is not None)
-        #     config = Config.from_file(checkpoint_dir / "model_config.yaml")
-        #     print(f"{checkpoint_dir=}")
-        #     print(f"{config=}")
+        if init == "pretrained":
+            print("_____________________in_LLM_load_pretrain___________________________")
+            checkpoint_dir = auto_download_checkpoint(model_name=model, access_token=access_token, ignore_tokenizer_files=tokenizer_dir is not None)
+            config = Config.from_file(checkpoint_dir / "model_config.yaml")
+            print(f"in___{checkpoint_dir=}")
+            print(f"in___{config=}")
 
-        # elif init == "random":
-        #     checkpoint_dir = None
-        #     try:
-        #         config = Config.from_name(model)
-        #     except ValueError:
-        #         print(f"Model name {model} is not supported.\n")
-        #         available_models = "\n".join(sorted(name_to_config))
-        #         print(f"Available values:\n{available_models}")
-        #         return
+        elif init == "random":
+            checkpoint_dir = None
+            try:
+                config = Config.from_name(model)
+            except ValueError:
+                print(f"Model name {model} is not supported.\n")
+                available_models = "\n".join(sorted(name_to_config))
+                print(f"Available values:\n{available_models}")
+                return
 
-        # else:
-        #     raise ValueError(f"Invalid init option: {init}. Must be one of {allowed_init}")
+        else:
+            raise ValueError(f"Invalid init option: {init}. Must be one of {allowed_init}")
 
-        # torch.set_float32_matmul_precision("high")
+        torch.set_float32_matmul_precision("high")
 
-        # if tokenizer_dir is not None:
-        #     tokenizer_dir = extend_checkpoint_dir(Path(tokenizer_dir))
-        #     tokenizer = Tokenizer(tokenizer_dir)
-        # elif checkpoint_dir is not None:
-        #     tokenizer = Tokenizer(checkpoint_dir)
-        # else:
-        #     raise ValueError("Provide a path to a tokenizer directory via the `tokenizer_dir` setting.")
+        if tokenizer_dir is not None:
+            tokenizer_dir = extend_checkpoint_dir(Path(tokenizer_dir))
+            tokenizer = Tokenizer(tokenizer_dir)
+        elif checkpoint_dir is not None:
+            tokenizer = Tokenizer(checkpoint_dir)
+        else:
+            raise ValueError("Provide a path to a tokenizer directory via the `tokenizer_dir` setting.")
 
-        # if checkpoint_dir is not None:
-        #     prompt_style = (
-        #         load_prompt_style(checkpoint_dir)
-        #         if has_prompt_style(checkpoint_dir)
-        #         else PromptStyle.from_config(config)
-        #     )
-        # else:
-        #     prompt_style = PromptStyle.from_config(config)
+        if checkpoint_dir is not None:
+            prompt_style = (
+                load_prompt_style(checkpoint_dir)
+                if has_prompt_style(checkpoint_dir)
+                else PromptStyle.from_config(config)
+            )
+        else:
+            prompt_style = PromptStyle.from_config(config)
 
-        # if distribute == "auto":
-        #     if torch.cuda.is_available():
-        #         accelerator = "cuda"
-        #     elif torch.backends.mps.is_available():
-        #         accelerator = "mps"
-        #     else:
-        #         accelerator = "cpu"
+        if distribute == "auto":
+            if torch.cuda.is_available():
+                accelerator = "cuda"
+            elif torch.backends.mps.is_available():
+                accelerator = "mps"
+            else:
+                accelerator = "cpu"
 
-        #     fabric = L.Fabric(
-        #         accelerator=accelerator,
-        #         devices=1,
-        #         precision=get_default_supported_precision(training=False),
-        #     )
+            fabric = L.Fabric(
+                accelerator=accelerator,
+                devices=1,
+                precision=get_default_supported_precision(training=False),
+            )
 
-        #     with fabric.init_module(empty_init=False):
-        #         model = GPT(config)
-        #     model.eval()
-        #     preprocessor = Preprocessor(tokenizer, device=fabric.device)
+            with fabric.init_module(empty_init=False):
+                model = GPT(config)
+            model.eval()
+            preprocessor = Preprocessor(tokenizer, device=fabric.device)
 
-        #     if checkpoint_dir is not None:
-        #         checkpoint_path = checkpoint_dir / "lit_model.pth"
-        #         check_file_size_on_cpu_and_warn(checkpoint_path, fabric.device)
-        #         load_checkpoint(fabric, model, checkpoint_path)
+            if checkpoint_dir is not None:
+                checkpoint_path = checkpoint_dir / "lit_model.pth"
+                check_file_size_on_cpu_and_warn(checkpoint_path, fabric.device)
+                load_checkpoint(fabric, model, checkpoint_path)
 
-        #     model = fabric.setup_module(model)
+            model = fabric.setup_module(model)
 
-        # else:
-        #     preprocessor = Preprocessor(tokenizer, device="cuda" if torch.cuda.is_available() else "cpu")
-        #     model = None
-        #     fabric = None
+        else:
+            preprocessor = Preprocessor(tokenizer, device="cuda" if torch.cuda.is_available() else "cpu")
+            model = None
+            fabric = None
 
-        # return cls(
-        #     model=model, preprocessor=preprocessor, prompt_style=prompt_style,
-        #     config=config, checkpoint_dir=checkpoint_dir, fabric=fabric, generate_strategy=None,
-        #     kv_cache_initialized=False, fixed_kv_cache_size=False
-        # )
+        return cls(
+            model=model, preprocessor=preprocessor, prompt_style=prompt_style,
+            config=config, checkpoint_dir=checkpoint_dir, fabric=fabric, generate_strategy=None,
+            kv_cache_initialized=False, fixed_kv_cache_size=False
+        )
 
     def distribute(
         self,
