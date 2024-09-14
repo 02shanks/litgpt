@@ -181,6 +181,8 @@ class LLM(torch.nn.Module):
         if init == "pretrained":
             checkpoint_dir = auto_download_checkpoint(model_name=model, access_token=access_token, ignore_tokenizer_files=tokenizer_dir is not None)
             config = Config.from_file(checkpoint_dir / "model_config.yaml")
+            print(f"{checkpoint_dir=}")
+            print(f"{config=}")
 
         elif init == "random":
             checkpoint_dir = None
