@@ -590,6 +590,7 @@ def auto_download_checkpoint(model_name, access_token=None, ignore_tokenizer_fil
     print(f"_____in_______auto_download_checkpoint")
     print(f"in_______{Path(model_name)=}")
     checkpoint_dir = extend_checkpoint_dir(Path(model_name))
+    print(f"_______{checkpoint_dir=}")
     try:
         check_valid_checkpoint_dir(checkpoint_dir, verbose=False, raise_error=True, ignore_tokenizer_files=ignore_tokenizer_files)
     except FileNotFoundError as e:
