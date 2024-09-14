@@ -176,6 +176,7 @@ class LLM(torch.nn.Module):
                 `llm = LLM.load(..., distribute=None)` and call `llm.distribute(...)` manually.
         """
 
+        print(f"in_LLM_load")
         allowed_init = {"pretrained", "random"}
 
         if init == "pretrained":
