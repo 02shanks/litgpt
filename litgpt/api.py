@@ -66,7 +66,7 @@ class LLM(torch.nn.Module):
         self.fixed_kv_cache_size = fixed_kv_cache_size
         self.prev_generated_seq_length = 0
         
-        print(f"{self.model=}")
+        print(f"in______{self.model=}")
 
     """
     LLM model class for inference, pretraining, and finetuning.
