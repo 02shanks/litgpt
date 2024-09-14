@@ -28,6 +28,7 @@ from jsonargparse import set_config_read_mode, set_docstring_parse_options, CLI
 
 
 def main() -> None:
+    print(f"_______in_________nain__________")
     parser_data = {
         "download": download_fn,
         "chat": chat_fn,
