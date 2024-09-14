@@ -588,7 +588,7 @@ def check_file_size_on_cpu_and_warn(checkpoint_path, device, size_limit=4_509_71
 def auto_download_checkpoint(model_name, access_token=None, ignore_tokenizer_files=False):
     from litgpt.scripts.download import download_from_hub  # moved here due to circular import issue
     print(f"_____in_______auto_download_checkpoint")
-    print(f"{Path(model_name)=}")
+    print(f"in_______{Path(model_name)=}")
     checkpoint_dir = extend_checkpoint_dir(Path(model_name))
     try:
         check_valid_checkpoint_dir(checkpoint_dir, verbose=False, raise_error=True, ignore_tokenizer_files=ignore_tokenizer_files)
