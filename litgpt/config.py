@@ -1862,4 +1862,30 @@ llama_2_function_calling = [
 
 configs.extend(llama_2_function_calling)
 
+
+#############
+# Qwen2
+#############
+Qwen2 = [
+    # https://huggingface.co/Qwen/Qwen2-0.5B/blob/main/config.json
+    dict(
+        name="Qwen2-0.5B",
+        hf_config=dict(org="Qwen", name="Qwen2-0.5B"),
+        vocab_size=151936,
+        block_size=131072,
+        intermediate_size=4864,
+        n_layer=24,
+        n_head=14,
+        n_embd=1536,
+        rotary_percentage=1.0,
+        rope_base=1000000.0,
+        parallel_residual=False,
+        bias=False,
+        norm_class_name="RMSNorm",
+        norm_eps=1e-06,
+        mlp_class_name="LLaMAMLP",   
+    ),   
+]
+configs.extend(Qwen2)
+
 name_to_config = {config["name"]: config for config in configs}
