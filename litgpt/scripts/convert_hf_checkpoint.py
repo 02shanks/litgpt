@@ -453,7 +453,7 @@ def convert_hf_checkpoint(
     *,
     model_name: Optional[str] = None,
     dtype: Optional[str] = None,
-    debug_mode: Optional[bool] = False
+    debug_mode: Optional[bool] = True
 ) -> None:
     """
     Convert a Hugging Face Transformers checkpoint into a LitGPT compatible checkpoint.
